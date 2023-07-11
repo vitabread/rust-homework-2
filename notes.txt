@@ -1,0 +1,56 @@
+关于Rust语言的所有权、不可变引用和可变引用：
+
+1. 所有权：
+   - Rust的核心概念之一是所有权，它确保内存资源在编译时始终得到有效管理。
+   - 每个值在任何时刻都只能有一个所有者。
+   - 当所有者离开作用域时，值将被释放。
+   - 通过所有权，Rust避免了内存泄漏和数据竞争等常见问题。
+
+   示例：
+   ```rust
+   fn main() {
+       let s = String::from("Hello");  // 创建一个拥有所有权的String
+       let len = calculate_length(s);  // 所有权转移到calculate_length函数
+       println!("Length: {}", len);
+   }  // s的所有权在这里结束，它的内存将被释放
+
+   fn calculate_length(s: String) -> usize {
+       s.len()  // s的所有权转移到该函数，函数执行完后s被释放
+   }
+   ```
+
+2. 不可变引用：
+   - 不可变引用允许多个对同一资源的只读访问。
+   - 不可变引用与所有权不同，它们不会获取资源的所有权，因此可以有多个不可变引用同时存在。
+   - 在同一作用域中，不可变引用不能与可变引用同时存在，以避免数据竞争。
+
+   示例：
+   ```rust
+   fn main() {
+       let s = String::from("Hello");
+       let len = calculate_length(&s);  // 创建一个对s的不可变引用
+       println!("Length: {}", len);
+   }  // 不可变引用的作用域在这里结束
+
+   fn calculate_length(s: &String) -> usize {
+       s.len()  // 不可变引用可以读取值，但不能修改它
+   }
+   ```
+
+3. 可变引用：
+   - 可变引用允许对资源进行读写访问，但在同一作用域中只能有一个可变引用。
+   - 可变引用与所有权不同，它们不会获取资源的所有权，因此可以有多个不可变引用或一个可变引用同时存在。
+   - Rust的借用规则确保了在特定作用域中的可变引用是唯一且排他的。
+
+   示例：
+   ```rust
+   fn main() {
+       let mut s = String::from("Hello");
+       change_string(&mut s);  // 创建一个对s的可变引用
+       println!("Modified string: {}", s);
+   }  // 可变引用的作用域在这里结束
+
+   fn change_string(s: &mut String) {
+       s.push_str(", world!");  // 可变引用可以修改值
+   }
+   ```
